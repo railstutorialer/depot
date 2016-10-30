@@ -7,3 +7,13 @@ one:
 two:
   product: two
   cart: two
+
+ruby:
+  product: ruby
+  quantity: 2
+  cart: books
+
+python:
+  product: python
+  quantity: 1
+  cart: books
