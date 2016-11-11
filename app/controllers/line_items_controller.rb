@@ -1,60 +1,66 @@
 class LineItemsController < ApplicationController
-  include CurrentCart
-  before_action :set_cart, only: [:create, :destroy]
-  before_action :set_line_item, only: [:show, :edit, :update, :destroy]
 
-  include CurrentCart
-
-  # GET /line_items
-  # GET /line_items.json
-  def index
-    @line_items = LineItem.all
-  end
-
-  # GET /line_items/1
-  # GET /line_items/1.json
-  def show
-  end
-
-  # GET /line_items/new
-  def new
-    @line_item = LineItem.new
-  end
-
-  # GET /line_items/1/edit
-  def edit
-  end
+  # # GET /line_items
+  # # GET /line_items.json
+  # def index
+  #   @line_items = LineItem.all
+  # end
+  #
+  # # GET /line_items/1
+  # # GET /line_items/1.json
+  # def show
+  # end
+  #
+  # # GET /line_items/new
+  # def new
+  #   @line_item = LineItem.new
+  # end
+  #
+  # # GET /line_items/1/edit
+  # def edit
+  # end
 
   # POST /line_items
   # POST /line_items.json
-  def create
+  def add_product
 
     session.delete :counter
 
-    product = Product.find params[:product_id]
-    @line_item = @cart.add_product product
+    cart_manager = CartManager.new session[:cart_id]
+    product_id = params[:product_id].to_i
+    result = cart_manager.add_product product_id
 
-    respond_to do |format|
-      if @line_item.save
-        format.html { redirect_to @line_item.cart }
-        format.json { render :show, status: :created, location: @line_item }
-      else
-        format.html { render :new }
-        format.json { render json: @line_item.errors, status: :unprocessable_entity }
-      end
+    if result[:change][:action] = :create
+      cart = result[:cart]
+      session[:cart_id] = cart.id
     end
-  end
 
-  # PATCH/PUT /line_items/1
-  # PATCH/PUT /line_items/1.json
-  def update
     respond_to do |format|
-      if @line_item.update(line_item_params)
-        format.html { redirect_to @line_item, notice: 'Line item was successfully updated.' }
-        format.json { render :show, status: :ok, location: @line_item }
-      else
-        format.html { render :edit }
-        format.json { render json: @line_item.errors, status: :unprocessable_entity }
+      format.html { redirect_to store_index_url }
+      format.js do
+        action = result[:change][:action]
+        if action != :none
+          @cart = result[:cart]
+          @current_item = result[:change][:line_item]
+          if action == :create
+            render 'carts/create'
+          else
+            if action == :create_line_item
+              render 'create'
+            elsif action == :increment
+              render 'increment'
+            end
+          end
+        else
+          error = result[:error]
+          if error[:code] == :not_found
+            status_code = 404
+          elsif error[:code] == :db_error
+            status_code = 500
+          end
+
+          render :status => status_code
+        end
       end
     end
   end
@@ -62,40 +68,75 @@ class LineItemsController < ApplicationController
   # DELETE /line_items/1
   # DELETE /line_items/1.json
   def destroy
-    if @line_item.cart.id == session[:cart_id]
-      @line_item.destroy
+    cart_manager = CartManager.new session[:cart_id]
+    id = params[:id].to_i
+    result = cart_manager.destroy_line_item id
 
-      cart_empty = @cart.line_items.length == 0
-      if cart_empty
-        @cart.destroy
-        session.delete :cart_id
-      end
+    if result[:change][:action] == :destroy
+      session.delete :cart_id
+    end
 
-      respond_to do |format|
-        if !cart_empty
-          format.html { redirect_to @cart, notice: 'Cart was successfully updated.' }
+    respond_to do |format|
+      format.js do
+        @cart = result[:cart]
+        action = result[:change][:action]
+        if action != :none
+          if action == :destroy
+            render 'carts/destroy'
+          elsif action == :destroy_line_item
+            render 'destroy'
+          end
         else
-          format.html { redirect_to store_index_url, notice: 'Your cart is currently empty' }
-        end
+          error = result[:error]
+          if error[:code] == :not_found
+            status_code = 404
+          elsif error[:code] == :db_error
+            status_code = 500
+          end
 
-        format.json { head :no_content }
-      end
-    else
-      respond_to do |format|
-        format.html { redirect_to store_index_url }
-        format.json { head :no_content }
+          render :status => status_code
+        end
       end
     end
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_line_item
-      @line_item = LineItem.find(params[:id])
+  def decrement
+    cart_manager = CartManager.new session[:cart_id]
+    id = params[:id].to_i
+    result = cart_manager.decrement id
+
+    if result[:change][:action] == :destroy
+      session.delete :cart_id
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def line_item_params
-      params.require(:line_item).permit(:product_id)
+    respond_to do |format|
+      format.js do
+        @cart = result[:cart]
+        action = result[:change][:action]
+
+        if action != :none
+          if action == :destroy
+            render 'carts/destroy'
+          else
+            if action == :destroy_line_item
+              render 'destroy'
+            elsif action == :decrement
+              render 'decrement'
+            end
+          end
+        else
+          error = result[:error]
+          if error[:code] == :not_found
+            status_code = 404
+          elsif error[:code] == :db_error
+            status_code = 500
+          end
+
+          render :status => status_code
+        end
+      end
     end
+
+  end
+
 end

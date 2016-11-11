@@ -1,0 +1,3 @@
+$('#cart').hide('blind', 1000).then(function() {
+  $('#cart').html('<%= j render partial: 'carts/cart', locals: { cart: @cart } %>')
+})

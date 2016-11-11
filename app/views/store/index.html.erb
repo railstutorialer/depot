@@ -1,18 +1,22 @@
 <p id="notice"><%= notice %></p>
 <h1>Your Pragmatic Catalog</h1>
-<% if @counter > 5 %>
+<% if @counter && @counter > 5 %>
   <div>You visited this page <%= pluralize @counter,  'time' %></div>
 <% end %>
 <% cache @products do %>
   <% @products.each do |product| %>
     <% cache product do %>
+      <% if @current_product == product %>
+      <div class="entry current_product">
+      <% else %>
       <div class="entry">
-        <%= image_tag product.image_url %>
+      <% end %>
+        <%= link_to (image_tag product.image_url), (add_product_line_item_path product_id: product), remote: true %>
         <h3><%= product.title %></h3>
         <%= sanitize product.description %>
         <div class="price_line">
           <span class="price"><%= number_to_currency product.price, unit: '€' %></span>
-          <%= button_to 'Add to Cart', (line_items_path product_id: product) %>
+          <%= button_to 'Add to Cart', (add_product_line_item_path product_id: product), remote: true %>
         </div>
       </div>
     <% end %>
