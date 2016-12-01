@@ -1,0 +1,36 @@
+.order-management {
+  .order {
+
+    &:after {
+      visibility: hidden;
+      display: block;
+      font-size: 0;
+      content: " ";
+      clear: both;
+      height: 0;
+    }
+    clear: both;
+
+    .order-id {
+      width: 30px;
+      float:left;
+    }
+
+    .order-products {
+      overflow: hidden;
+      min-height: 18px;
+    }
+
+    .order-product {
+    }
+
+    .btn-action {
+      margin: 5px;
+      float: right;
+    }
+  }
+
+  .order:nth-child(even){
+    background: #9c9;
+  }
+}

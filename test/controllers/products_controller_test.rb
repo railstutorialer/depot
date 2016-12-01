@@ -14,7 +14,7 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
     get products_url
     assert_response :success
-    assert_select '#columns #side a', 4
+    assert_select '#columns #side a', 7
     assert_select '.list_line_odd, .list_line_even', 3
   end
 

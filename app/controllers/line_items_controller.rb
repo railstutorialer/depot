@@ -1,27 +1,7 @@
 class LineItemsController < ApplicationController
 
-  # # GET /line_items
-  # # GET /line_items.json
-  # def index
-  #   @line_items = LineItem.all
-  # end
-  #
-  # # GET /line_items/1
-  # # GET /line_items/1.json
-  # def show
-  # end
-  #
-  # # GET /line_items/new
-  # def new
-  #   @line_item = LineItem.new
-  # end
-  #
-  # # GET /line_items/1/edit
-  # def edit
-  # end
+  skip_before_action :authorize, only: [:add_product, :destroy, :decrement]
 
-  # POST /line_items
-  # POST /line_items.json
   def add_product
 
     session.delete :counter
@@ -30,13 +10,15 @@ class LineItemsController < ApplicationController
     product_id = params[:product_id].to_i
     result = cart_manager.add_product product_id
 
+    logger.debug result[:change][:action]
+
     if result[:change][:action] = :create
       cart = result[:cart]
       session[:cart_id] = cart.id
     end
 
+
     respond_to do |format|
-      format.html { redirect_to store_index_url }
       format.js do
         action = result[:change][:action]
         if action != :none
@@ -44,12 +26,10 @@ class LineItemsController < ApplicationController
           @current_item = result[:change][:line_item]
           if action == :create
             render 'carts/create'
-          else
-            if action == :create_line_item
-              render 'create'
-            elsif action == :increment
-              render 'increment'
-            end
+          elsif action == :create_line_item
+            render 'create'
+          elsif action == :increment
+            render 'increment'
           end
         else
           error = result[:error]
@@ -61,6 +41,11 @@ class LineItemsController < ApplicationController
 
           render :status => status_code
         end
+      end
+      format.html do
+        @cart = result[:cart]
+        @current_item = result[:change][:line_item]
+        redirect_to store_index_path
       end
     end
   end
@@ -136,7 +121,6 @@ class LineItemsController < ApplicationController
         end
       end
     end
-
   end
 
 end

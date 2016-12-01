@@ -5,4 +5,7 @@ module ApplicationHelper
     end
     content_tag 'div', attributes, &block
   end
+
+  def mode
+  end
 end

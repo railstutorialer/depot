@@ -1,0 +1,23 @@
+<div class="order-management">
+  <% @orders.each do |order| %>
+  <div class="order">
+
+    <div class="order-id">
+      <%= order.id %>
+    </div>
+
+
+    <%= button_to 'Ship', (ship_order_url order), :form_class => 'btn-action'  %>
+    <%= button_to 'Change ship date', (show_change_ship_date_url order), :method => :get, :form_class => 'btn-action' %>
+
+    <div class="order-products">
+      <% order.line_items.each do |line_item| %>
+      <div class="order-product">
+        <%= line_item.product.title %>
+      </div>
+      <% end %>
+    </div>
+
+  </div>
+  <% end %>
+</div>

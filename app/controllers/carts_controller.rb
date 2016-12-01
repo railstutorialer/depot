@@ -1,21 +1,10 @@
 class CartsController < ApplicationController
-  # before_action :set_cart, only: [:show, :edit, :update, :destroy]
-  rescue_from ActiveRecord::RecordNotFound, with: :invalid_cart
+  skip_before_action :authorize
 
-  # GET /carts
-  # GET /carts.json
-  def index
-    @carts = Cart.all
-  end
-
-  # DELETE /carts/1
-  # DELETE /carts/1.json
   def destroy
     cart_manager = CartManager.new session[:cart_id]
     id = params[:id].to_i
     result = cart_manager.destroy id
-
-
 
     if result[:change][:action] == :destroy
       session.delete :cart_id
@@ -23,10 +12,21 @@ class CartsController < ApplicationController
 
     respond_to do |format|
       format.js do
-        @cart = result[:cart]
+        if result[:change][:action] == :destroy
+          @cart = result[:cart]
+          render 'destroy'
+        else
+          error = result[:error]
+          if error[:code] == :not_found
+            status_code = 404
+          elsif error[:code] == :db_error
+            status_code = 500
+          end
+
+          render :status => status_code
+        end
       end
-      format.html { redirect_to store_index_url }
-      format.json { head :no_content }
     end
   end
+
 end
