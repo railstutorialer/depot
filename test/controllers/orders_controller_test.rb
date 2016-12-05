@@ -5,11 +5,6 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     @order = orders(:one)
   end
 
-  test "should get index" do
-    get orders_url
-    assert_response :success
-  end
-
   test "requires item in cart" do
     get new_order_url
     assert_redirected_to store_index_path

@@ -1,2 +1,8 @@
 check:
-  label: check
+  name_translation: check
+
+credit_card:
+  name_translation: credit_card
+
+purchase_order:
+  name_translation: purchase_order

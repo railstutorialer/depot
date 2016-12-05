@@ -49,7 +49,7 @@ class UserStoriesTest < ActionDispatch::IntegrationTest
       assert_equal 'Dave Thomas', order.name
       assert_equal '123 The Street', order.address
       assert_equal 'railstutorial15@gmail.com', order.email
-      assert_equal 'check', order.pay_type.label
+      assert_equal 'check', order.pay_type.name
 
       assert_equal 1, order.line_items.size
       line_item = order.line_items[0]

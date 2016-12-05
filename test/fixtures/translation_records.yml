@@ -1,0 +1,26 @@
+check_en:
+  translation: check
+  locale: en
+  text: check
+check_es:
+  translation: check
+  locale: es
+  text: cheque
+
+credit_card_en:
+  translation: credit_card
+  locale: en
+  text: Credit card
+credit_card_es:
+  translation: credit_card
+  locale: es
+  text: Tarjeta de crédito
+
+purchase_order_en:
+  translation: purchase_order
+  locale: en
+  text: Purchase order
+purchase_order_es:
+  translation: purchase_order
+  locale: es
+  text: Orden de compra
