@@ -6,6 +6,10 @@ module ApplicationHelper
     content_tag 'div', attributes, &block
   end
 
-  def mode
+  def number_to_currency amount
+    i18n_manager = I18nManager.new
+    currency_manager = CurrencyManager.new i18n_manager
+    converted_amount = currency_manager.convert amount
+    super converted_amount
   end
 end

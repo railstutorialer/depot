@@ -9,10 +9,12 @@ class ProductsController < ApplicationController
   end
 
   def new
+    @locales = LANGUAGES
     @product = Product.new
   end
 
   def edit
+    @locales = LANGUAGES
   end
 
   def create
@@ -23,7 +25,10 @@ class ProductsController < ApplicationController
         format.html { redirect_to @product, notice: 'Product was successfully created.' }
         format.json { render :show, status: :created, location: @product }
       else
-        format.html { render :new }
+        format.html {
+          @locales = LANGUAGES
+          render :new
+        }
         format.json { render json: @product.errors, status: :unprocessable_entity }
       end
     end
@@ -39,7 +44,10 @@ class ProductsController < ApplicationController
         @current_product = @product
         ActionCable.server.broadcast 'products', html: (render_to_string 'store/index', layout: false)
       else
-        format.html { render :edit }
+        format.html {
+          @locales = LANGUAGES
+          render :edit
+        }
         format.json { render json: @product.errors, status: :unprocessable_entity }
       end
     end
@@ -72,6 +80,6 @@ class ProductsController < ApplicationController
     end
 
     def product_params
-      params.require(:product).permit(:title, :description, :image_url, :price)
+      params.require(:product).permit(:title, :description, :image_url, :price, :locale)
     end
 end

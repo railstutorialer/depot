@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161129174400) do
+ActiveRecord::Schema.define(version: 20161205180436) do
 
   create_table "carts", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -42,7 +42,9 @@ ActiveRecord::Schema.define(version: 20161129174400) do
   end
 
   create_table "pay_types", force: :cascade do |t|
-    t.string "label"
+    t.string  "label"
+    t.integer "name_translation_id"
+    t.index ["name_translation_id"], name: "index_pay_types_on_name_translation_id"
   end
 
   create_table "products", force: :cascade do |t|
@@ -52,6 +54,18 @@ ActiveRecord::Schema.define(version: 20161129174400) do
     t.decimal  "price",       precision: 8, scale: 2
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
+    t.string   "locale"
+  end
+
+  create_table "translation_records", force: :cascade do |t|
+    t.integer "translation_id"
+    t.string  "locale"
+    t.string  "text"
+    t.index ["locale"], name: "index_translation_records_on_locale"
+    t.index ["translation_id"], name: "index_translation_records_on_translation_id"
+  end
+
+  create_table "translations", force: :cascade do |t|
   end
 
   create_table "users", force: :cascade do |t|

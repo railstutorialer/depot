@@ -8,17 +8,6 @@ Rails.application.routes.draw do
   end
 
   resources :users
-  resources :orders
-  resources :line_items do
-    member do
-      post 'decrement'
-    end
-  end
-  post 'add_product/:product_id', to: 'line_items#add_product', as: 'add_product_line_item'
-
-
-  resources :carts
-  root 'store#index', as: 'store_index'
 
   get 'order_management', to: 'order_management#index', as: 'order_management'
   post 'order_management/ship/:id', to: 'order_management#ship', as: 'ship_order'
@@ -28,5 +17,20 @@ Rails.application.routes.draw do
   resources :products do
     get :who_bought, on: :member
   end
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+
+  post 'change_locale', to: 'i18n#change_locale', as: 'change_locale'
+
+  scope '(:locale)' do
+    resources :orders
+
+    resources :carts
+    resources :line_items do
+      member do
+        post 'decrement'
+      end
+    end
+    post 'add_product/:product_id', to: 'line_items#add_product', as: 'add_product_line_item'
+
+    root 'store#index', as: 'store_index'
+  end
 end

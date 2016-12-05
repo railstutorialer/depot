@@ -22,7 +22,8 @@ Product.create(title: 'Rails, Angular, Postgres, and Bootstrap',
       environment.
       </p>},
   image_url: 'dcbang.jpg',
-  price: 45.00)
+  price: 45.00,
+  locale: 'en')
 # . . .
 Product.create(title: 'Seven Mobile Apps in Seven Weeks',
   description:
@@ -35,7 +36,8 @@ Product.create(title: 'Seven Mobile Apps in Seven Weeks',
       out which cross-platform solution makes the most sense for your needs.
       </p>},
   image_url: '7apps.jpg',
-  price: 26.00)
+  price: 26.00,
+  locale: 'en')
 # . . .
 
 Product.create(title: 'Ruby Performance Optimization',
@@ -52,9 +54,83 @@ Product.create(title: 'Ruby Performance Optimization',
       will run orders of magnitude faster.
       </p>},
   image_url: 'adrpo.jpg',
-  price: 46.00)
+  price: 46.00,
+  locale: 'en')
 
+Product.create(title: 'Rails, Angular, Postgres, and Bootstrap ES',
+  description:
+    %{<p>
+      <em>Powerful, Effective, and Efficient Full-Stack Web Development</em>
+      Como desarrollador de Rails, le interesa la experiencia y el rendimiento del usuario,
+      Pero también quiere código simple y de mantenimiento. Lograr todo eso por
+      Abrazar la pila completa de desarrollo web, desde el estilo con
+      Bootstrap, construyendo una interfaz de usuario interactiva con AngularJS, para
+      Almacenar datos de forma rápida y confiable en PostgreSQL. Tome una visión holística de
+      Desarrollo de pila completa para crear aplicaciones utilizables y de alto rendimiento,
+      Y aprender a utilizar estas tecnologías de forma eficaz en un Ruby on Rails
+      ambiente.
+      </p>},
+  image_url: 'dcbang.jpg',
+  price: 45.00,
+  locale: 'es')
+# . . .
+Product.create(title: 'Seven Mobile Apps in Seven Weeks ES',
+  description:
+    %{<p>
+      <em>Native Apps, Multiple Platforms</em>
+      Responde a la pregunta "¿Podemos construir esto para TODOS los dispositivos?" Con un
+      Sonando SÍ. Este libro le ayudará a llegar con un mundo real
+      Introducción a siete plataformas, ya sea nuevo para móviles o
+      Desarrollador experimentado que necesita ampliar sus opciones. Además, usted encontrará
+      Que la solución multiplataforma tiene más sentido para sus necesidades.
+      </p>},
+  image_url: '7apps.jpg',
+  price: 26.00,
+  locale: 'es')
+# . . .
 
-PayType.create label: 'Check'
-PayType.create label: 'Credit card'
-PayType.create label: 'Purchase order'
+Product.create(title: 'Ruby Performance Optimization ES',
+  description:
+    %{<p>
+      <em>Why Ruby Is Slow, and How to Fix It</em>
+      No es necesario aceptar el rendimiento lento de Ruby o Rails. En esto
+      Completa de la optimización Ruby, aprenderá a escribir
+      Más rápido código Ruby, pero eso es sólo el comienzo. Vea exactamente lo que hace
+      Ruby y código de Rails lento, y cómo solucionarlo. Alex Dymo te guiará
+      A través de los peligros de la memoria y optimización de CPU, perfilado, medición,
+      Pruebas de rendimiento, recolección de basura y ajuste. Usted encontrará que
+      Todas esas cosas "duras" no son tan difíciles después de todo, y su código
+      Ejecutará órdenes de magnitud más rápidas.
+      </p>},
+  image_url: 'adrpo.jpg',
+  price: 46.00,
+  locale: 'es')
+
+t_check = Translation.create
+t_check_en = TranslationRecord.create locale: 'en', text: 'Check'
+t_check_es = TranslationRecord.create locale: 'es', text: 'Cheque'
+t_check.translation_records << t_check_en
+t_check.translation_records << t_check_es
+t_check.save
+t_credit_card = Translation.create
+t_credit_card_en = TranslationRecord.create locale: 'en', text: 'Credit card'
+t_credit_card_es = TranslationRecord.create locale: 'es', text: 'Tarjeta de crédito'
+t_credit_card.translation_records << t_credit_card_en
+t_credit_card.translation_records << t_credit_card_es
+t_credit_card.save
+t_purchase_order = Translation.create
+t_purchase_order_en = TranslationRecord.create locale: 'en', text: 'Purchase order'
+t_purchase_order_es = TranslationRecord.create locale: 'es', text: 'Orden de compra'
+t_purchase_order.translation_records << t_purchase_order_en
+t_purchase_order.translation_records << t_purchase_order_es
+t_purchase_order.save
+
+check = PayType.create label: 'Check'
+check.name_translation = t_check
+check.save
+credit_card = PayType.create label: 'Credit card'
+credit_card.name_translation = t_credit_card
+credit_card.save
+purchase_order = PayType.create label: 'Purchase order'
+purchase_order.name_translation = t_purchase_order
+purchase_order.save
